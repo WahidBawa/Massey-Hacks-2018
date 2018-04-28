@@ -22,6 +22,7 @@ def MapLoad(Map_Name):
 				tile = Map_Name.get_tile_image_by_gid(gid)
 				if tile:
 					screen.blit(tile, ((x * Map_Name.tilewidth), (y * Map_Name.tileheight)))
+
 def load_images():
 	global images
 	images = {}
@@ -88,6 +89,8 @@ class Player(sprite.Sprite):
 			elif self.weapon == "shotgun":
 				for i in range(5):
 					Bullet(self.rect.centerx, self.rect.centery, self.ang+radians(randint(-20,20)))
+	def switch_weapon(self):
+		self.weapon = len(weapons) - weapons.keys().index(self.weapons)
 
 class Bullet(sprite.Sprite):
 	def __init__(self, x, y, ang):
