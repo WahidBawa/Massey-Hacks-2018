@@ -129,11 +129,6 @@ class Enemy(sprite.Sprite):
 		self.rect.center = self.x, self.y
 		self.image = transform.rotate(self.real_image, 360-degrees(self.ang))
 
-		# hits =
-
-all_sprites = sprite.Group()
-bullets = sprite.Group()
-enemy = Enemy()
 all_sprites = sprite.Group()
 bullets = sprite.Group()
 enemies = sprite.Group()
@@ -165,8 +160,9 @@ while running:
 	for s in all_sprites:
 		s.update()
 
-	all_sprites.draw(screen)
+	hits = sprite.groupcollide(enemies, bullets, True, True)
 
+	all_sprites.draw(screen)
 	screen.blit(f.render(str(len(bullets)), True, BLACK), (0, 0))
 	display.flip()
 	myClock.tick(60)
