@@ -10,7 +10,7 @@ GREEN = (0,255,0)
 BLUE = (0,0,255)
 init()
 myClock = time.Clock()
-width, height = size = (display.Info().current_w, display.Info().current_h)
+width, height = size = (min(1920,display.Info().current_w), min(1080,display.Info().current_h))
 screen = display.set_mode(size, FULLSCREEN)
 running = True
 fname = load_pygame("Maps/64.tmx")
@@ -34,7 +34,6 @@ ani_pics = []
 for i in range(445):
 	ani_pics.append(image.load("loading/frame_%03d_delay-0.02s.png" % i))
 def loading_animation(delay):
-	# Itertools makes the for loop run infinitly
 	for c in itertools.cycle(ani_pics):
 		if loading_images_done:
 			break
@@ -70,7 +69,7 @@ class Player(sprite.Sprite):
 		self.rect.center = width/2, height/2
 
 		self.bullet_counter_max = 10
-		self.bullet_counter = 0
+		self.bullet_counter = self.bullet_counter_max
 
 	def update(self):
 		self.ang = atan2(height/2 - my, width/2 - mx)
@@ -80,7 +79,7 @@ class Player(sprite.Sprite):
 
 	def shoot_bullet(self):
 		self.bullet_counter += 1
-		if self.bullet_counter >= self.bullet_counter_max:
+		if self.bullet_counter > self.bullet_counter_max:
 			self.bullet_counter = 0
 			Bullet(self.rect.centerx, self.rect.centery, self.ang+radians(randint(-5,5)))
 
@@ -108,14 +107,44 @@ class Bullet(sprite.Sprite):
 
 class Enemy(sprite.Sprite):
 	def __init__(self):
+		sprite.Sprite.__init__(self)
+		all_sprites.add(self)
+		enemies.add(self)
 		self.real_image = images["enemy"]
 		self.x, self.y = randint(0,width), randint(0,height)
+		self.image = self.real_image
+		self.rect = self.image.get_rect()
+		self.x, self.y = randint(0,width), randint(0,height)
+		self.rect.center = self.x, self.y
+		self.ang = self.get_ang()
 
+	def get_ang(self):
+		return atan2(player.rect.centery-self.y, player.rect.centerx-self.x)
+
+	def update(self):
+		SPEED = 2
+		self.ang = self.get_ang()
+		self.x += SPEED * cos(self.ang)
+		self.y += SPEED * sin(self.ang)
+		self.rect.center = self.x, self.y
+		self.image = transform.rotate(self.real_image, 360-degrees(self.ang))
+
+		# hits =
 
 all_sprites = sprite.Group()
 bullets = sprite.Group()
 enemy = Enemy()
+all_sprites = sprite.Group()
+bullets = sprite.Group()
+enemies = sprite.Group()
+
 player = Player()
+
+Enemy()
+Enemy()
+Enemy()
+Enemy()
+Enemy()
 
 while running:
 	for evt in event.get():
