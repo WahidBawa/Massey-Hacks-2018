@@ -17,7 +17,7 @@ with (open("64.tmx", 'w')) as f:
 			grid += "%d," % c
 		grid += "\n"
 
-	grid = grid[:-1]
+	grid = grid[:-2] + "\n"
 	# print(grid)
 	f.write(grid)
 
