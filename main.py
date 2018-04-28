@@ -32,7 +32,6 @@ class Player(sprite.Sprite):
 
 	def update(self):
 		self.ang = atan2(height/2 - my, width/2 - mx)
-		print(self.ang)
 		self.image = transform.rotate(self.real_image, 180-degrees(self.ang))
 		self.rect = self.image.get_rect()
 		self.rect.center = width/2, height/2
