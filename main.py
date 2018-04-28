@@ -36,8 +36,6 @@ def loading_animation(delay):
 
 def do_loading(target, args=[]):
 	global loading_images_done
-	# Found the threading stuff online:
-	# https://stackoverflow.com/questions/22029562/python-how-to-make-simple-animated-loading-while-process-is-running
 	loading_images_done = False
 	l = threading.Thread(target=target, args=args)
 	l.start()
@@ -60,13 +58,23 @@ class Player(sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = width/2, height/2
 
+		self.bullet_counter_max = 10
+		self.bullet_counter = 0
+
 	def update(self):
 		self.ang = atan2(height/2 - my, width/2 - mx)
 		self.image = transform.rotate(self.real_image, 180-degrees(self.ang))
 		self.rect = self.image.get_rect()
 		self.rect.center = width/2, height/2
 
+	def shoot_bullet(self):
+		self.bullet_counter += 1
+		if self.bullet_counter >= self.bullet_counter_max:
+			# Add bullet
+			pass
+
 all_sprites = sprite.Group()
+bullets = sprite.Group()
 player = Player()
 
 while running:
@@ -78,11 +86,15 @@ while running:
 				running = False
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
+	kp = key.get_pressed()
 
 	screen.fill(WHITE)
 
 	for s in all_sprites:
 		s.update()
+
+	if kp[K_SPACE]:
+		player.shoot_bullet()
 
 	all_sprites.draw(screen)
 
