@@ -58,6 +58,8 @@ def do_loading(target, args=[]):
 
 do_loading(load_images)
 
+weapons = {"machine gun": 5, "shotgun": 40}
+
 class Player(sprite.Sprite):
 	def __init__(self):
 		sprite.Sprite.__init__(self)
@@ -68,8 +70,8 @@ class Player(sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = width/2, height/2
 
-		self.bullet_counter_max = 10
-		self.bullet_counter = self.bullet_counter_max
+		self.weapon = "machine gun"
+		self.bullet_counter = weapons[self.weapon]
 
 	def update(self):
 		self.ang = atan2(height/2 - my, width/2 - mx)
@@ -79,9 +81,13 @@ class Player(sprite.Sprite):
 
 	def shoot_bullet(self):
 		self.bullet_counter += 1
-		if self.bullet_counter > self.bullet_counter_max:
+		if self.bullet_counter > weapons[self.weapon]:
 			self.bullet_counter = 0
-			Bullet(self.rect.centerx, self.rect.centery, self.ang+radians(randint(-5,5)))
+			if self.weapon == "machine gun":
+				Bullet(self.rect.centerx, self.rect.centery, self.ang+radians(randint(-5,5)))
+			elif self.weapon == "shotgun":
+				for i in range(5):
+					Bullet(self.rect.centerx, self.rect.centery, self.ang+radians(randint(-20,20)))
 
 class Bullet(sprite.Sprite):
 	def __init__(self, x, y, ang):
@@ -100,9 +106,7 @@ class Bullet(sprite.Sprite):
 		self.y -= SPEED*sin(self.ang)
 		self.rect.center = self.x, self.y
 		self.image = transform.rotate(self.real_image, 180-degrees(self.ang))
-		if self.rect.right < 0 or self.rect.left > width:
-			self.kill()
-		if self.rect.top < 0 or self.rect.bottom > height:
+		if self.rect.right < 0 or self.rect.left > width or self.rect.top < 0 or self.rect.bottom > height:
 			self.kill()
 
 class Enemy(sprite.Sprite):
@@ -110,36 +114,40 @@ class Enemy(sprite.Sprite):
 		sprite.Sprite.__init__(self)
 		all_sprites.add(self)
 		enemies.add(self)
+		self.SPEED = randint(10,30)/10
 		self.real_image = images["enemy"]
-		self.x, self.y = randint(0,width), randint(0,height)
+		self.x, self.y = self.get_rand_pos()
 		self.image = self.real_image
 		self.rect = self.image.get_rect()
 		self.x, self.y = randint(0,width), randint(0,height)
 		self.rect.center = self.x, self.y
 		self.ang = self.get_ang()
 
+	def get_rand_pos(self):
+		global text
+		valid = False
+		x, y = 0, 0
+		while True:
+			x, y = randint(0,width), randint(0,height)
+			if hypot(player.rect.centerx-x, player.rect.centery-y) > 500:
+				return x, y
+
 	def get_ang(self):
 		return atan2(player.rect.centery-self.y, player.rect.centerx-self.x)
 
 	def update(self):
-		SPEED = 2
 		self.ang = self.get_ang()
-		self.x += SPEED * cos(self.ang)
-		self.y += SPEED * sin(self.ang)
+		self.x += self.SPEED * cos(self.ang)
+		self.y += self.SPEED * sin(self.ang)
 		self.rect.center = self.x, self.y
 		self.image = transform.rotate(self.real_image, 360-degrees(self.ang))
 
+score = 0
 all_sprites = sprite.Group()
 bullets = sprite.Group()
 enemies = sprite.Group()
 
 player = Player()
-
-Enemy()
-Enemy()
-Enemy()
-Enemy()
-Enemy()
 
 while running:
 	for evt in event.get():
@@ -154,6 +162,9 @@ while running:
 
 	screen.fill(WHITE)
 	MapLoad(fname)
+
+	while (len(enemies) < 2):
+		Enemy()
 	if kp[K_SPACE]:
 		player.shoot_bullet()
 
@@ -161,9 +172,11 @@ while running:
 		s.update()
 
 	hits = sprite.groupcollide(enemies, bullets, True, True)
+	if hits:
+		score += 1
 
 	all_sprites.draw(screen)
-	screen.blit(f.render(str(len(bullets)), True, BLACK), (0, 0))
+	screen.blit(f.render(str(score), True, BLACK), (0, 0))
 	display.flip()
 	myClock.tick(60)
 quit()
