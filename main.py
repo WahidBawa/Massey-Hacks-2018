@@ -17,6 +17,7 @@ def load_images():
 	global images
 	images = {}
 	images["player1"] = image.load("Sprites/PNG/Man Blue/manBlue_stand.png")
+	images["bullet"] = image.load("Sprites/PNG/weapon_gun.png")
 	time.wait(1000)
 
 ani_pics = []
@@ -74,7 +75,7 @@ class Player(sprite.Sprite):
 class Bullets(sprite.Sprite):
 	def __init__(self, x, y):
 		sprite.Sprite.__init__(self)
-		self.image = image.load("Sprites/PNG/weapon_gun.png").convert_alpha()
+		self.image = images["bullet"]
 		self.rect = self.image.get_rect()
 		self.x, self.y = x, y
 		self.rect.center = self.x, self.y
