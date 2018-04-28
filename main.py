@@ -1,6 +1,7 @@
 import threading, itertools
 from pygame import *
 from math import *
+from random import *
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
@@ -17,8 +18,9 @@ f = font.SysFont("Times New Roman", 20)
 def load_images():
 	global images
 	images = {}
-	images["player1"] = image.load("Sprites/PNG/Man Blue/manBlue_stand.png")
+	images["player1"] = image.load("Sprites/PNG/Hitman 1/hitman1_machine.png")
 	images["bullet"] = image.load("Sprites/PNG/weapon_gun.png")
+	images["enemy"] = image.load("Sprites/PNG/Zombie 1/zoimbie1_hold.png")
 	# time.wait(1000)
 
 ani_pics = []
@@ -73,7 +75,7 @@ class Player(sprite.Sprite):
 		self.bullet_counter += 1
 		if self.bullet_counter >= self.bullet_counter_max:
 			self.bullet_counter = 0
-			Bullet(self.rect.centerx, self.rect.centery, self.ang)
+			Bullet(self.rect.centerx, self.rect.centery, self.ang+radians(randint(-5,5)))
 
 class Bullet(sprite.Sprite):
 	def __init__(self, x, y, ang):
@@ -87,11 +89,22 @@ class Bullet(sprite.Sprite):
 		self.ang = ang
 
 	def update(self):
-		SPEED = 5
+		SPEED = 10
 		self.x -= SPEED*cos(self.ang)
 		self.y -= SPEED*sin(self.ang)
 		self.rect.center = self.x, self.y
 		self.image = transform.rotate(self.real_image, 180-degrees(self.ang))
+		if self.rect.right < 0 or self.rect.left > width:
+			self.kill()
+		if self.rect.top < 0 or self.rect.bottom > height:
+			self.kill()
+
+class Enemy(sprite.Sprite):
+	def __init__(self):
+		self.real_image = images["enemy"]
+		valid = False
+		while not valid:
+			self.x, self.y = randint(0,width), randint(0,height)
 
 all_sprites = sprite.Group()
 bullets = sprite.Group()
@@ -119,7 +132,7 @@ while running:
 
 	all_sprites.draw(screen)
 
-	screen.blit(f.render(str(player.ang), True, BLACK), (0, 0))
+	screen.blit(f.render(str(len(bullets)), True, BLACK), (0, 0))
 	display.flip()
 	myClock.tick(60)
 quit()
