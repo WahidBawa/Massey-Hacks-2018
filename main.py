@@ -2,6 +2,7 @@ import threading, itertools
 from pygame import *
 from math import *
 from random import *
+from pytmx import *
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
@@ -12,9 +13,15 @@ myClock = time.Clock()
 width, height = size = (display.Info().current_w, display.Info().current_h)
 screen = display.set_mode(size, FULLSCREEN)
 running = True
-
+fname = load_pygame("Maps/64.tmx")
 f = font.SysFont("Times New Roman", 20)
-
+def MapLoad(Map_Name):
+	for layer in Map_Name.visible_layers:
+		if isinstance(layer, TiledTileLayer):
+			for x, y, gid in layer:
+				tile = Map_Name.get_tile_image_by_gid(gid)
+				if tile:
+					screen.blit(tile, ((x * Map_Name.tilewidth), (y * Map_Name.tileheight)))
 def load_images():
 	global images
 	images = {}
@@ -102,13 +109,12 @@ class Bullet(sprite.Sprite):
 class Enemy(sprite.Sprite):
 	def __init__(self):
 		self.real_image = images["enemy"]
-		valid = False
-		while not valid:
-			self.x, self.y = randint(0,width), randint(0,height)
+		self.x, self.y = randint(0,width), randint(0,height)
+
 
 all_sprites = sprite.Group()
 bullets = sprite.Group()
-
+enemy = Enemy()
 player = Player()
 
 while running:
@@ -123,7 +129,7 @@ while running:
 	kp = key.get_pressed()
 
 	screen.fill(WHITE)
-
+	MapLoad(fname)
 	if kp[K_SPACE]:
 		player.shoot_bullet()
 
