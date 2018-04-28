@@ -35,10 +35,20 @@ class Player(sprite.Sprite):
 		self.image = transform.rotate(self.real_image, 180-degrees(self.ang))
 		self.rect = self.image.get_rect()
 		self.rect.center = width/2, height/2
-
+class Bullets(sprite.Sprite):
+	def __init__(self, x, y):
+		sprite.Sprite.__init__(self)
+		self.image = image.load("Sprites/PNG/weapon_gun.png").convert_alpha()
+		self.rect = self.image.get_rect()
+		self.x, self.y = x, y
+		self.rect.center = self.x, self.y
+	def update(self):
+		self.rect.y -= player.ang	
 all_sprites = sprite.Group()
 player = Player()
-
+bullet = Bullets(player.rect.x, player.rect.y)
+# bullet = Bullets(50, 50)
+all_sprites.add(bullet)
 while running:
 	for evt in event.get():
 		if evt.type == QUIT:
@@ -52,6 +62,7 @@ while running:
 	screen.fill(WHITE)
 
 	player.update()
+	bullet.update()
 	# for s in all_sprites:
 	# 	s.update()
 
