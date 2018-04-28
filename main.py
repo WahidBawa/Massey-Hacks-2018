@@ -2,7 +2,6 @@
 from pygame import * 
 init()
 screen = display.set_mode((display.Info().current_w, display.Info().current_h))
-
 running = True
 while running:
 	for evt in event.get():
