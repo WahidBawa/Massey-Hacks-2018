@@ -109,7 +109,7 @@ class Player(sprite.Sprite):
 		self.bullet_counter = weapons[self.weapon]
 
 	def update(self):
-		# self.ang = atan2(height/2 - my, width/2 - mx)
+		self.ang = atan2(height/2 - my, width/2 - mx)
 		self.image = transform.rotate(self.real_image, 180-degrees(self.ang))
 		self.rect = self.image.get_rect()
 		self.rect.center = width/2, height/2
@@ -198,36 +198,31 @@ while running:
 			if evt.key == K_ESCAPE:
 				running = False
 				save()
-
 			if evt.key == K_s:
 				player.switch_weapon()
-			if evt.key == K_q:
-				randomize()	
-				MapLoad(load_pygame("Maps/64.tmx"))
-			if evt.key == K_r:
-				randomize()
-			if evt.key == K_y:
-				score += 39
 		if evt.type == MOUSEBUTTONUP:
 			if evt.button == 1 and mode == 'menu' and playRect.collidepoint(mx,my):
 				mode = 'play'
 			elif evt.button == 1 and mode == 'game over' and play_Again_Rect.collidepoint(mx,my):
 				mode = 'menu'	
+			elif evt.button == 1 and mode == 'menu' and insRect.collidepoint(mx, my):
+				mode = 'instructions'	
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
 	if mode == 'menu':
 		score = 0
 		playRect = Rect(width / 2 - 58, 500, 130, 80) # 520, 480
+		insRect = Rect(width / 2 - 133, 595, 300, 80)
 		screen.blit(images["back"], (0,0))
 		screen.blit(f1.render("Mafia Defenders", True, (255,0,0)), (width/2 - 475,0))
 		screen.blit(f2.render("Start", True, (255,0,0)), (width / 2 - 58, 480))
-		
+		screen.blit(f2.render("Instructions", True, (255,0,0)), (width / 2 - 135, 565))
+	elif mode == 'instructions':
+		screen.blit(images["back"], (0,0))
+		screen.blit(f2.render("Instructions", True, (255,0,0)), (width / 2 - 135, 0))
 		display.flip()
-
 	elif mode == "play":	
-		# print(mx,my)
-
 		try:
 			s = str(ser.readline())[2:-5].split(",")
 			f = int(s[0])
@@ -245,7 +240,7 @@ while running:
 
 			player.ang += radians((axis-500) / 20)
 		except:
-			print("ERROR")
+			pass
 		screen.fill(WHITE)
 		MapLoad(fname)
 		while (len(enemies) < int(score / 15 + 1)):
@@ -258,13 +253,9 @@ while running:
 		else:
 			if energy < 100:
 				energy += .2	
-
 		screen.blit(f3.render('Energy: ' + str(int(energy)), True, (0,0,0)), (315, 65))
-		draw.rect(screen, BLACK, (98, 60, 204, 40), 4)
-		draw.rect(screen, GREEN, (100, 62, int(energy*2), 36))	
 		for s in all_sprites:
 			s.update()
-
 		hits = sprite.groupcollide(enemies, bullets, True, True)
 		if hits:
 			score += 1
@@ -278,6 +269,8 @@ while running:
 		screen.blit(f2.render(str(int(score)), True, BLACK), (width / 2 - 35, 0))
 		draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
 		draw.rect(screen, GREEN, (100, 12, int(player.health*2), 36))
+		draw.rect(screen, BLACK, (98, 60, 204, 40), 4)
+		draw.rect(screen, GREEN, (100, 62, int(energy*2), 36))	
 		screen.blit(f3.render("HP: " + str(int(player.health)), True, BLACK), (315, 15))
 		if player.health > 100:
 			player.health = 100
