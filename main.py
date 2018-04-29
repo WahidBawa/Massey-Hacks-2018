@@ -3,7 +3,7 @@ from pygame import *
 from math import *
 from random import *
 from pytmx import *
-from real_shit import *
+from change import *
 import pickle as p
 WHITE = (255,255,255)
 BLACK = (0,0,0)
@@ -16,9 +16,9 @@ mixer.pre_init(44100,-16,1,512)
 mixer.init()
 mixer.music.load("music/music.ogg")#loads the song
 mixer.music.play(-1)
-# try:
-# ser = serial.Serial('COM9', 9600)
-# except: pass
+try:
+	ser = serial.Serial('COM8', 9600)
+except: pass
 width, height = size = (min(1920,display.Info().current_w), min(1080,display.Info().current_h))
 screen = display.set_mode(size, FULLSCREEN)
 running = True
@@ -225,12 +225,10 @@ while running:
 		display.flip()
 	elif mode == "play":	
 		try:
-			s = str(ser.readline())[2:-5].split(",")
-			f = int(s[0])
-			a = int(s[1])
+			f = int(str(ser.readline())[2:-5])
+			print(f)
 			flex = (flex+f)/2
 			axis = (axis+a)/2
-			print(axis)
 			if 880 < flex < 940:
 				player.inPosition = False
 			elif flex > 940:
@@ -241,6 +239,7 @@ while running:
 
 			player.ang += radians((axis-500) / 20)
 		except:
+			print("ERROR")
 			pass
 		if kp[K_RIGHT]:
 			player.ang += radians(5)
