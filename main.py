@@ -200,7 +200,7 @@ while running:
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
 	if mode == 'menu':
-		playRect = Rect(width / 2 - 58, 500, 130, 80) #520, 480
+		playRect = Rect(width / 2 - 58, 500, 130, 80) # 520, 480
 		print(mx,my)
 		screen.blit(images["back"], (0,0))
 		screen.blit(f1.render("Mafia Defenders", True, (255,0,0)), (width/2 - 475,0))
