@@ -10,8 +10,12 @@ BLACK = (0,0,0)
 RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
-init()
 
+init()
+mixer.pre_init(44100,-16,1,512)
+mixer.init()
+mixer.music.load("music.ogg")#loads the song
+mixer.music.play(-1)
 try:
 	ser = serial.Serial('COM3', 9600)
 except: pass
