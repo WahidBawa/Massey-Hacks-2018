@@ -200,11 +200,11 @@ while running:
 			if evt.key == K_r:
 				randomize()
 			if evt.key == K_y:
-				player.health = 0
+				score += 40
 		if evt.type == MOUSEBUTTONUP:
-			if evt.button == 1 and playRect.collidepoint(mx,my) and mode == 'menu':
+			if evt.button == 1 and mode == 'menu' and playRect.collidepoint(mx,my):
 				mode = 'play'
-			elif evt.button == 1 and play_Again_Rect.collidepoint(mx,my) and mode == 'game over':
+			elif evt.button == 1 and mode == 'game over' and play_Again_Rect.collidepoint(mx,my):
 				mode = 'menu'	
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
@@ -246,7 +246,7 @@ while running:
 		hits = sprite.groupcollide(enemies, bullets, True, True)
 		if hits:
 			score += 1
-		if score == 40:
+		if score % 40 == 0:
 			randomize()	
 			score += 0.1
 		if player.health <= 0:
