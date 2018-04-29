@@ -1,13 +1,24 @@
-#include <Ultrasonic.h>
-Ultrasonic s1(10,9);
+const int r = 13;
+const int g = 12;
+const int b = 11;
+
+void color(int r1, int g1, int b1) {
+  analogWrite(r, r1);
+  analogWrite(g, g1);
+  analogWrite(b, b1);
+}
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  int distCm = s1.distanceRead();
-  Serial.println(distCm);
-  delay(200);
+  int thing = analogRead(A0);
+  if (30 < thing && thing < 100) {
+    color(0,255,255);
+  } else {
+    color(0,255,0);
+  }
+  Serial.println(thing);
+  delay(17);
 }
