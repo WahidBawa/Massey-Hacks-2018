@@ -1,8 +1,9 @@
 import threading, itertools
-from pygame import *
+from load_pygameme import *
 from math import *
 from random import *
 from pytmx import *
+
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
