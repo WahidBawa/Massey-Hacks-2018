@@ -48,6 +48,7 @@ def load_images():
 	images["player1"] = image.load("Sprites/PNG/Hitman 1/hitman1_machine.png")
 	images["bullet"] = image.load("Sprites/PNG/weapon_gun.png")
 	images["enemy"] = image.load("Sprites/PNG/Zombie 1/zoimbie1_hold.png")
+	images["back"] = transform.scale(image.load("Sprites/menu/back.jpg").convert_alpha(), (width, height))
 
 ani_pics = []
 for i in range(445):
@@ -189,20 +190,25 @@ while running:
 				MapLoad(load_pygame("Maps/64.tmx"))
 			if evt.key == K_r:
 				randomize()
-
+			if evt.key == K_y:
+				player.health = 0
+		if evt.type == MOUSEBUTTONUP:
+			if evt.button == 1 and playRect.collidepoint(mx,my):
+				mode = 'play'
+			# elif evt.button == 1	
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
 	if mode == 'menu':
 		playRect = Rect(width / 2 - 58, 500, 130, 80) #520, 480
 		print(mx,my)
-		screen.blit(transform.scale(image.load("Sprites/menu/back.jpg").convert_alpha(), (width, height)), (0,0))
+		screen.blit(images["back"], (0,0))
 		screen.blit(f1.render("Mafia Defenders", True, (255,0,0)), (width/2 - 475,0))
 		screen.blit(f2.render("Start", True, (255,0,0)), (width / 2 - 58, 480))
 		
 		display.flip()
 
-	else:	
+	elif mode == "play":	
 		try:
 			s = str(ser.readline())[2:-5]
 			print(s)
@@ -229,10 +235,21 @@ while running:
 		hits = sprite.groupcollide(enemies, bullets, True, True)
 		if hits:
 			score += 1
+		if score == 40:
+			randomize()	
+			score += 0.1
+		if player.health <= 0:
+			mode = 'game over'
 		all_sprites.draw(screen)
-		screen.blit(f.render(str(score), True, BLACK), (0, 0))
+		screen.blit(f2.render(str(int(score)), True, BLACK), (0, 0))
 		draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
 		draw.rect(screen, GREEN, (100, 12, int(player.health*2), 36))
+	elif mode == 'game over':
+		screen.blit(images["back"], (0,0))	
+		play_Again_Rect = Rect(width / 2 - 58, 500, 300, 95) #520, 480
+		screen.blit(f2.render("Play Again", True, (255,0,0)), (width / 2 - 58, 480))
+		display.flip()
+	# player.health = 100
 
 	display.flip()
 	myClock.tick(60)
