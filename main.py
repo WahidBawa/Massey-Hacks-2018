@@ -246,6 +246,10 @@ while running:
 			player.ang += radians((axis-500) / 20)
 		except:
 			print("ERROR")
+		if kp[K_RIGHT]:
+			player.ang += radians(5)
+		if kp[K_LEFT]:
+			player.ang -= radians(5)
 		screen.fill(WHITE)
 		MapLoad(fname)
 		while (len(enemies) < int(score / 15 + 1)):
