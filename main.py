@@ -18,7 +18,7 @@ mixer.init()
 mixer.music.load("music/music.ogg")#loads the song
 mixer.music.play(-1)
 # try:
-ser = serial.Serial('COM6', 9600)
+ser = serial.Serial('COM9', 9600)
 # except: pass
 width, height = size = (min(1920,display.Info().current_w), min(1080,display.Info().current_h))
 screen = display.set_mode(size, FULLSCREEN)
@@ -223,15 +223,17 @@ while running:
 
 	elif mode == "play":	
 		try:
-			s = str(ser.readline())[2:-5]
+			s = str(ser.readline())[2:-5].split(",")
+			flux = s[0]
+			axis = s[1]
 			print(s)
-			if 900 < int(s) < 1000:
-				player.inPosition = False
-			else:
-				if not player.inPosition:
-					player.switch_weapon()
-					print("SWITCH")
-				player.inPosition = True
+			# if 900 < int(s) < 1000:
+			# 	player.inPosition = False
+			# else:
+			# 	if not player.inPosition:
+			# 		player.switch_weapon()
+			# 		print("SWITCH")
+			# 	player.inPosition = True
 		except: pass
 
 		screen.fill(WHITE)
