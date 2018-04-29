@@ -26,7 +26,7 @@ void loop() {
   int rawZ = analogRead(A2);
   Serial.print(",");
   Serial.println(rawZ);
-  delay(17);
+    delay(17);
 }
 
 

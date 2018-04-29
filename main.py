@@ -109,7 +109,7 @@ class Player(sprite.Sprite):
 		self.bullet_counter = weapons[self.weapon]
 
 	def update(self):
-		self.ang = atan2(height/2 - my, width/2 - mx)
+		# self.ang = atan2(height/2 - my, width/2 - mx)
 		self.image = transform.rotate(self.real_image, 180-degrees(self.ang))
 		self.rect = self.image.get_rect()
 		self.rect.center = width/2, height/2
@@ -187,6 +187,8 @@ bullets = sprite.Group()
 enemies = sprite.Group()
 
 player = Player()
+flex = 900
+axis = 500
 
 while running:
 	for evt in event.get():
@@ -225,19 +227,25 @@ while running:
 
 	elif mode == "play":	
 		# print(mx,my)
+		player.health, energy = 100, 100
 		try:
 			s = str(ser.readline())[2:-5].split(",")
-			flux = s[0]
-			axis = s[1]
-			print(s)
-			# if 900 < int(s) < 1000:
-			# 	player.inPosition = False
-			# else:
-			# 	if not player.inPosition:
-			# 		player.switch_weapon()
-			# 		print("SWITCH")
-			# 	player.inPosition = True
-		except: pass
+			f = int(s[0])
+			a = int(s[1])
+			flex = (flex+f)/2
+			axis = (axis+a)/2
+			print(axis)
+			if 880 < flex < 940:
+				player.inPosition = False
+			elif flex > 940:
+				if not player.inPosition:
+					player.switch_weapon()
+					print("SWITCH")
+				player.inPosition = True
+
+			player.ang += radians((axis-500) / 20)
+		except:
+			print("ERROR")
 		screen.fill(WHITE)
 		MapLoad(fname)
 		while (len(enemies) < int(score / 15 + 1)):
