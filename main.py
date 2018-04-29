@@ -1,21 +1,32 @@
-import threading, itertools
+import threading, itertools, serial
 from pygame import *
 from math import *
 from random import *
 from pytmx import *
-from randomize import *
+from real_shit import *
+
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
 init()
-myClock = time.Clock()
+
+try:
+	ser = serial.Serial('COM3', 9600)
+except: pass
 width, height = size = (min(1920,display.Info().current_w), min(1080,display.Info().current_h))
 screen = display.set_mode(size, FULLSCREEN)
 running = True
+myClock = time.Clock()
 fname = load_pygame("Maps/64.tmx")
 f = font.SysFont("Times New Roman", 20)
+
+def randomize():
+	global fname
+	make_new_random_thing()
+	fname = load_pygame("Maps/64.tmx")
+
 def MapLoad(Map_Name):
 	for layer in Map_Name.visible_layers:
 		if isinstance(layer, TiledTileLayer):
@@ -66,6 +77,7 @@ class Player(sprite.Sprite):
 		sprite.Sprite.__init__(self)
 		all_sprites.add(self)
 		self.health = 100
+		self.inPosition = False
 		self.real_image = images["player1"]
 		self.ang = 0
 		self.image = self.real_image
@@ -165,9 +177,23 @@ while running:
 
 			if evt.key == K_s:
 				player.switch_weapon()
+			if evt.key == K_r:
+				randomize()
+
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
+	try:
+		s = str(ser.readline())[2:-5]
+		print(s)
+		if 30 < int(s) < 100:
+			player.inPosition = False
+		else:
+			if not player.inPosition:
+				player.switch_weapon()
+				print("SWITCH")
+			player.inPosition = True
+	except: pass
 
 	screen.fill(WHITE)
 	MapLoad(fname)
