@@ -17,9 +17,9 @@ mixer.pre_init(44100,-16,1,512)
 mixer.init()
 mixer.music.load("music/music.ogg")#loads the song
 mixer.music.play(-1)
-# try:
-ser = serial.Serial('COM6', 9600)
-# except: pass
+try:
+	ser = serial.Serial('COM6', 9600)
+except: pass
 width, height = size = (min(1920,display.Info().current_w), min(1080,display.Info().current_h))
 screen = display.set_mode(size, FULLSCREEN)
 running = True
@@ -28,6 +28,7 @@ fname = load_pygame("Maps/64.tmx")
 # f = font.SysFont("Times New Roman", 20)
 f1 = font.Font("Font/TheGodfather-v2.ttf", 250)
 f2 = font.Font("Font/TheGodfather-v2.ttf", 115)
+f3 = font.Font("Font/TheGodfather-v2.ttf", 35)
 mode = 'menu'
 energy = 100
 def randomize():
@@ -222,6 +223,7 @@ while running:
 		display.flip()
 
 	elif mode == "play":	
+		print(mx,my)
 		try:
 			s = str(ser.readline())[2:-5]
 			print(s)
@@ -233,7 +235,6 @@ while running:
 					print("SWITCH")
 				player.inPosition = True
 		except: pass
-
 		screen.fill(WHITE)
 		MapLoad(fname)
 
@@ -243,12 +244,12 @@ while running:
 			if energy >= 1:
 				player.shoot_bullet()
 				energy -= .4
-			screen.blit(f2.render(str(int(energy)), True, (0,0,0)), (100,100))
+			screen.blit(f3.render('Energy: ' + str(int(energy)), True, (0,0,0)), (315, 65))
 		else:
 			if energy < 100:
 				energy += .2	
 
-		screen.blit(f2.render(str(int(energy)), True, (0,0,0)), (100,100))
+		screen.blit(f3.render('Energy: ' + str(int(energy)), True, (0,0,0)), (315, 65))
 		draw.rect(screen, BLACK, (98, 60, 204, 40), 4)
 		draw.rect(screen, GREEN, (100, 62, int(energy*2), 36))	
 		for s in all_sprites:
@@ -263,9 +264,11 @@ while running:
 			HighScore = max(score, HighScore)
 			mode = 'game over'
 		all_sprites.draw(screen)
-		screen.blit(f2.render(str(int(score)), True, BLACK), (0, 0))
+		screen.blit(f2.render(str(int(score)), True, BLACK), (width / 2 - 35, 0))
 		draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
 		draw.rect(screen, GREEN, (100, 12, int(player.health*2), 36))
+		screen.blit(f3.render("HP: " + str(int(player.health)), True, BLACK), (315, 15))
+
 	elif mode == 'game over':
 		screen.blit(images["back"], (0,0))	
 		play_Again_Rect = Rect(width / 2 - 58, 500, 300, 95) #520, 480
