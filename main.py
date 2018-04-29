@@ -84,8 +84,7 @@ def load():
 	return HighScore
 def save():
 	p.dump(HighScore, open("HighScore.dat", "wb"))	
-HighScore = load()#["High Score"]	
-print(HighScore)
+HighScore = load()
 weapons = {"machine gun": 5, "shotgun": 40}
 
 class Player(sprite.Sprite):
@@ -200,7 +199,7 @@ while running:
 			if evt.key == K_r:
 				randomize()
 			if evt.key == K_y:
-				score += 40
+				score += 39
 		if evt.type == MOUSEBUTTONUP:
 			if evt.button == 1 and mode == 'menu' and playRect.collidepoint(mx,my):
 				mode = 'play'
@@ -245,9 +244,8 @@ while running:
 		hits = sprite.groupcollide(enemies, bullets, True, True)
 		if hits:
 			score += 1
-		if score % 40 == 0:
-			randomize()	
-			score += 0.1
+			if score % 40 == 0:
+				randomize()	
 		if player.health <= 0:
 			HighScore = max(score, HighScore)
 			mode = 'game over'
@@ -260,9 +258,11 @@ while running:
 		play_Again_Rect = Rect(width / 2 - 58, 500, 300, 95) #520, 480
 		screen.blit(f2.render("Play Again", True, (255,0,0)), (width / 2 - 125, 480))
 		screen.blit(f2.render("Score: " + str(int(score)), True, (255,0,0)), (width / 2 - 125, 0))
-		screen.blit(f2.render("High Score: " + str(HighScore), True, (255,0,0)), (width / 2 - 125, 150))
+		screen.blit(f2.render("High Score: " + str(int(HighScore)), True, (255,0,0)), (width / 2 - 125, 150))
 		display.flip()
 		player.health = 100
+		for i in enemies:
+			i.kill()
 
 	display.flip()
 	myClock.tick(60)
