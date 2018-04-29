@@ -200,12 +200,10 @@ while running:
 			if evt.key == K_s:
 				player.switch_weapon()
 		if evt.type == MOUSEBUTTONUP:
-			if evt.button == 1 and mode == 'menu' and playRect.collidepoint(mx,my) or mode == 'instructions':
+			if evt.button == 1 and mode == 'menu' and playRect.collidepoint(mx,my):
 				mode = 'play'
 			elif evt.button == 1 and mode == 'game over' and play_Again_Rect.collidepoint(mx,my):
 				mode = 'menu'	
-			elif evt.button == 1 and mode == 'menu' and insRect.collidepoint(mx, my):
-				mode = 'instructions'	
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
@@ -216,13 +214,6 @@ while running:
 		screen.blit(images["back"], (0,0))
 		screen.blit(f1.render("Mafia Defenders", True, (255,0,0)), (width/2 - 475,0))
 		screen.blit(f2.render("Start", True, (255,0,0)), (width / 2 - 58, 480))
-		screen.blit(f2.render("Instructions", True, (255,0,0)), (width / 2 - 135, 565))
-	elif mode == 'instructions':
-		playRect = Rect(width / 2 - 58, 500, 130, 80)
-		screen.blit(images["back"], (0,0))
-		screen.blit(f2.render("Instructions", True, (255,0,0)), (width / 2 - 135, 0))
-		screen.blit(f2.render("Start", True, (255,0,0)), (width / 2 - 58, 480))
-		display.flip()
 	elif mode == "play":	
 		try:
 			f = int(str(ser.readline())[2:-5])
