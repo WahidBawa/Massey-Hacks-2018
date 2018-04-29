@@ -2,6 +2,7 @@ from random import *
 
 vals = [1,14,96]
 width, height = 30, 17
+
 with (open("Maps/64.tmx", 'w')) as f:
 	f.write('''<?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.1.2" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="64" tileheight="64" infinite="0" nextobjectid="1">
