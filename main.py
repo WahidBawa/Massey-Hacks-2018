@@ -29,7 +29,7 @@ fname = load_pygame("Maps/64.tmx")
 f1 = font.Font("Font/TheGodfather-v2.ttf", 250)
 f2 = font.Font("Font/TheGodfather-v2.ttf", 115)
 mode = 'menu'
-
+energy = 100
 def randomize():
 	global fname
 	make_new_random_thing()
@@ -88,8 +88,7 @@ def load():
 	return HighScore
 def save():
 	p.dump(HighScore, open("HighScore.dat", "wb"))	
-HighScore = load()#["High Score"]	
-print(HighScore)
+HighScore = load()
 weapons = {"machine gun": 5, "shotgun": 40}
 
 class Player(sprite.Sprite):
@@ -204,7 +203,7 @@ while running:
 			if evt.key == K_r:
 				randomize()
 			if evt.key == K_y:
-				score += 40
+				score += 39
 		if evt.type == MOUSEBUTTONUP:
 			if evt.button == 1 and mode == 'menu' and playRect.collidepoint(mx,my):
 				mode = 'play'
@@ -241,18 +240,25 @@ while running:
 		while (len(enemies) < 2):
 			Enemy()
 		if kp[K_SPACE]:
-			player.shoot_bullet()
+			if energy >= 1:
+				player.shoot_bullet()
+				energy -= .4
+			screen.blit(f2.render(str(int(energy)), True, (0,0,0)), (100,100))
+		else:
+			if energy < 100:
+				energy += .2	
 
+		screen.blit(f2.render(str(int(energy)), True, (0,0,0)), (100,100))
+		draw.rect(screen, BLACK, (98, 60, 204, 40), 4)
+		draw.rect(screen, GREEN, (100, 62, int(energy*2), 36))	
 		for s in all_sprites:
 			s.update()
 
 		hits = sprite.groupcollide(enemies, bullets, True, True)
 		if hits:
 			score += 1
-		if score % 40 == 0:
-			print(score % 40)
-			randomize()	
-			score += 0.1
+			if score % 40 == 0:
+				randomize()	
 		if player.health <= 0:
 			HighScore = max(score, HighScore)
 			mode = 'game over'
@@ -265,9 +271,11 @@ while running:
 		play_Again_Rect = Rect(width / 2 - 58, 500, 300, 95) #520, 480
 		screen.blit(f2.render("Play Again", True, (255,0,0)), (width / 2 - 125, 480))
 		screen.blit(f2.render("Score: " + str(int(score)), True, (255,0,0)), (width / 2 - 125, 0))
-		screen.blit(f2.render("High Score: " + str(HighScore), True, (255,0,0)), (width / 2 - 125, 150))
+		screen.blit(f2.render("High Score: " + str(int(HighScore)), True, (255,0,0)), (width / 2 - 125, 150))
 		display.flip()
 		player.health = 100
+		for i in enemies:
+			i.kill()
 
 	display.flip()
 	myClock.tick(60)
