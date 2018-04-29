@@ -4,6 +4,7 @@ from math import *
 from random import *
 from pytmx import *
 from real_shit import *
+import pickle as p
 
 WHITE = (255,255,255)
 BLACK = (0,0,0)
@@ -78,6 +79,13 @@ def do_loading(target, args=[]):
 
 do_loading(load_images)
 
+def load():
+	HighScore = p.load(open("HighScore.dat", 'rb'))
+	return HighScore
+def save():
+	p.dump(HighScore, open("HighScore.dat", "wb"))	
+HighScore = load()#["High Score"]	
+print(HighScore)
 weapons = {"machine gun": 5, "shotgun": 40}
 
 class Player(sprite.Sprite):
@@ -182,6 +190,7 @@ while running:
 		if evt.type == KEYDOWN:
 			if evt.key == K_ESCAPE:
 				running = False
+				save()
 
 			if evt.key == K_s:
 				player.switch_weapon()
@@ -193,13 +202,15 @@ while running:
 			if evt.key == K_y:
 				player.health = 0
 		if evt.type == MOUSEBUTTONUP:
-			if evt.button == 1 and playRect.collidepoint(mx,my):
+			if evt.button == 1 and playRect.collidepoint(mx,my) and mode == 'menu':
 				mode = 'play'
-			# elif evt.button == 1	
+			elif evt.button == 1 and play_Again_Rect.collidepoint(mx,my) and mode == 'game over':
+				mode = 'menu'	
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
 	if mode == 'menu':
+		score = 0
 		playRect = Rect(width / 2 - 58, 500, 130, 80) # 520, 480
 		print(mx,my)
 		screen.blit(images["back"], (0,0))
@@ -239,6 +250,7 @@ while running:
 			randomize()	
 			score += 0.1
 		if player.health <= 0:
+			HighScore = max(score, HighScore)
 			mode = 'game over'
 		all_sprites.draw(screen)
 		screen.blit(f2.render(str(int(score)), True, BLACK), (0, 0))
@@ -247,9 +259,11 @@ while running:
 	elif mode == 'game over':
 		screen.blit(images["back"], (0,0))	
 		play_Again_Rect = Rect(width / 2 - 58, 500, 300, 95) #520, 480
-		screen.blit(f2.render("Play Again", True, (255,0,0)), (width / 2 - 58, 480))
+		screen.blit(f2.render("Play Again", True, (255,0,0)), (width / 2 - 125, 480))
+		screen.blit(f2.render("Score: " + str(int(score)), True, (255,0,0)), (width / 2 - 125, 0))
+		screen.blit(f2.render("High Score: " + str(HighScore), True, (255,0,0)), (width / 2 - 125, 150))
 		display.flip()
-	# player.health = 100
+		player.health = 100
 
 	display.flip()
 	myClock.tick(60)
