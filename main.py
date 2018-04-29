@@ -5,7 +5,6 @@ from random import *
 from pytmx import *
 from real_shit import *
 import pickle as p
-
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
@@ -109,7 +108,7 @@ class Player(sprite.Sprite):
 		self.bullet_counter = weapons[self.weapon]
 
 	def update(self):
-		self.ang = atan2(height/2 - my, width/2 - mx)
+		# self.ang = atan2(height/2 - my, width/2 - mx)
 		self.image = transform.rotate(self.real_image, 180-degrees(self.ang))
 		self.rect = self.image.get_rect()
 		self.rect.center = width/2, height/2
@@ -201,7 +200,7 @@ while running:
 			if evt.key == K_s:
 				player.switch_weapon()
 		if evt.type == MOUSEBUTTONUP:
-			if evt.button == 1 and mode == 'menu' and playRect.collidepoint(mx,my):
+			if evt.button == 1 and mode == 'menu' and playRect.collidepoint(mx,my) or mode == 'instructions':
 				mode = 'play'
 			elif evt.button == 1 and mode == 'game over' and play_Again_Rect.collidepoint(mx,my):
 				mode = 'menu'	
@@ -219,8 +218,10 @@ while running:
 		screen.blit(f2.render("Start", True, (255,0,0)), (width / 2 - 58, 480))
 		screen.blit(f2.render("Instructions", True, (255,0,0)), (width / 2 - 135, 565))
 	elif mode == 'instructions':
+		playRect = Rect(width / 2 - 58, 500, 130, 80)
 		screen.blit(images["back"], (0,0))
 		screen.blit(f2.render("Instructions", True, (255,0,0)), (width / 2 - 135, 0))
+		screen.blit(f2.render("Start", True, (255,0,0)), (width / 2 - 58, 480))
 		display.flip()
 	elif mode == "play":	
 		try:
