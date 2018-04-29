@@ -13,7 +13,7 @@ void setup() {
 }
 
 void loop() {
-  int thing = analogRead(A0);
+  int thing = analogRead(A2);
   if (30 < thing && thing < 100) {
     color(0,255,255);
   } else {

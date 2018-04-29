@@ -14,12 +14,10 @@ BLUE = (0,0,255)
 init()
 mixer.pre_init(44100,-16,1,512)
 mixer.init()
-mixer.music.load("music.ogg")#loads the song
-# mixer.music.play(-1)
-mixer.music.stop()
-
+mixer.music.load("music/music.ogg")#loads the song
+mixer.music.play(-1)
 try:
-	ser = serial.Serial('COM3', 9600)
+	ser = serial.Serial('COM8', 9600)
 except: pass
 width, height = size = (min(1920,display.Info().current_w), min(1080,display.Info().current_h))
 screen = display.set_mode(size, FULLSCREEN)
@@ -195,7 +193,6 @@ while running:
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
-<<<<<<< HEAD
 	if mode == 'menu':
 		playRect = Rect(width / 2 - 58, 500, 130, 80) #520, 480
 		print(mx,my)
@@ -236,38 +233,7 @@ while running:
 		screen.blit(f.render(str(score), True, BLACK), (0, 0))
 		draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
 		draw.rect(screen, GREEN, (100, 12, int(player.health*2), 36))
-=======
-	try:
-		s = str(ser.readline())[2:-5]
-		print(s)
-		if 30 < int(s) < 100:
-			player.inPosition = False
-		else:
-			if not player.inPosition:
-				player.switch_weapon()
-			player.inPosition = True
-	except: pass
 
-	screen.fill(WHITE)
-	MapLoad(fname)
-
-	while (len(enemies) < 2):
-		Enemy()
-	if kp[K_SPACE]:
-		player.shoot_bullet()
-
-	for s in all_sprites:
-		s.update()
-
-	hits = sprite.groupcollide(enemies, bullets, True, True)
-	if hits:
-		score += 1
-	all_sprites.draw(screen)
-	screen.blit(f.render(str(score), True, BLACK), (0, 0))
-	draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
-	draw.rect(screen, GREEN, (100, 12, int(player.health*2), 36))
-	
->>>>>>> d0766bbef2d2b601f4bad368c8396adc75d3f7bd
 	display.flip()
 	myClock.tick(60)
 quit()
