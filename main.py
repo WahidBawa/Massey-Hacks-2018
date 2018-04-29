@@ -184,6 +184,8 @@ while running:
 		score += 1
 
 	all_sprites.draw(screen)
+	draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
+	draw.rect(screen, GREEN, (100, 12, int(player.health*2), 36))
 	screen.blit(f.render(str(player.health), True, BLACK), (0, 0))
 	display.flip()
 	myClock.tick(60)
