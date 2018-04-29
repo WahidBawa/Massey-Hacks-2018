@@ -15,7 +15,9 @@ init()
 mixer.pre_init(44100,-16,1,512)
 mixer.init()
 mixer.music.load("music.ogg")#loads the song
-mixer.music.play(-1)
+# mixer.music.play(-1)
+mixer.music.stop()
+
 try:
 	ser = serial.Serial('COM3', 9600)
 except: pass
@@ -24,7 +26,10 @@ screen = display.set_mode(size, FULLSCREEN)
 running = True
 myClock = time.Clock()
 fname = load_pygame("Maps/64.tmx")
-f = font.SysFont("Times New Roman", 20)
+# f = font.SysFont("Times New Roman", 20)
+f1 = font.Font("Font/TheGodfather-v2.ttf", 250)
+f2 = font.Font("Font/TheGodfather-v2.ttf", 115)
+mode = 'menu'
 
 def randomize():
 	global fname
@@ -190,36 +195,46 @@ while running:
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
-	try:
-		s = str(ser.readline())[2:-5]
-		print(s)
-		if 30 < int(s) < 100:
-			player.inPosition = False
-		else:
-			if not player.inPosition:
-				player.switch_weapon()
-				print("SWITCH")
-			player.inPosition = True
-	except: pass
+	if mode == 'menu':
+		playRect = Rect(width / 2 - 58, 500, 130, 80) #520, 480
+		print(mx,my)
+		screen.blit(transform.scale(image.load("Sprites/menu/back.jpg").convert_alpha(), (width, height)), (0,0))
+		screen.blit(f1.render("Mafia Defenders", True, (255,0,0)), (width/2 - 475,0))
+		screen.blit(f2.render("Start", True, (255,0,0)), (width / 2 - 58, 480))
+		
+		display.flip()
 
-	screen.fill(WHITE)
-	MapLoad(fname)
+	else:	
+		try:
+			s = str(ser.readline())[2:-5]
+			print(s)
+			if 30 < int(s) < 100:
+				player.inPosition = False
+			else:
+				if not player.inPosition:
+					player.switch_weapon()
+					print("SWITCH")
+				player.inPosition = True
+		except: pass
 
-	while (len(enemies) < 2):
-		Enemy()
-	if kp[K_SPACE]:
-		player.shoot_bullet()
+		screen.fill(WHITE)
+		MapLoad(fname)
 
-	for s in all_sprites:
-		s.update()
+		while (len(enemies) < 2):
+			Enemy()
+		if kp[K_SPACE]:
+			player.shoot_bullet()
 
-	hits = sprite.groupcollide(enemies, bullets, True, True)
-	if hits:
-		score += 1
-	all_sprites.draw(screen)
-	screen.blit(f.render(str(score), True, BLACK), (0, 0))
-	draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
-	draw.rect(screen, GREEN, (100, 12, int(player.health*2), 36))
+		for s in all_sprites:
+			s.update()
+
+		hits = sprite.groupcollide(enemies, bullets, True, True)
+		if hits:
+			score += 1
+		all_sprites.draw(screen)
+		screen.blit(f.render(str(score), True, BLACK), (0, 0))
+		draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
+		draw.rect(screen, GREEN, (100, 12, int(player.health*2), 36))
 	display.flip()
 	myClock.tick(60)
 quit()
