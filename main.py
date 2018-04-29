@@ -18,7 +18,7 @@ mixer.init()
 mixer.music.load("music/music.ogg")#loads the song
 mixer.music.play(-1)
 # try:
-ser = serial.Serial('COM9', 9600)
+# ser = serial.Serial('COM9', 9600)
 # except: pass
 width, height = size = (min(1920,display.Info().current_w), min(1080,display.Info().current_h))
 screen = display.set_mode(size, FULLSCREEN)
@@ -227,7 +227,7 @@ while running:
 
 	elif mode == "play":	
 		# print(mx,my)
-		player.health, energy = 100, 100
+
 		try:
 			s = str(ser.readline())[2:-5].split(",")
 			f = int(s[0])
@@ -288,7 +288,7 @@ while running:
 		screen.blit(f2.render("Score: " + str(int(score)), True, (255,0,0)), (width / 2 - 125, 0))
 		screen.blit(f2.render("High Score: " + str(int(HighScore)), True, (255,0,0)), (width / 2 - 125, 150))
 		display.flip()
-		player.health = 100
+		player.health, energy = 100, 100
 		for i in enemies:
 			i.kill()
 
