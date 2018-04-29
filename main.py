@@ -1,9 +1,8 @@
 import threading, itertools
-from load_pygameme import *
 from math import *
 from random import *
 from pytmx import *
-from randomize import *
+from pygame import *
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
@@ -16,6 +15,31 @@ screen = display.set_mode(size, FULLSCREEN)
 running = True
 fname = load_pygame("Maps/64.tmx")
 f = font.SysFont("Times New Roman", 20)
+def randomize():
+	vals = [1,14,96]
+	width, height = 30, 17
+	with (open("Maps/64.tmx", 'w')) as f:
+		f.write('''<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.2" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="64" tileheight="64" infinite="0" nextobjectid="1">
+ <tileset firstgid="1" name="t1" tilewidth="64" tileheight="64" spacing="10" tilecount="540" columns="27">
+  <image source="../Sprites/Spritesheet/spritesheet_tiles.png" width="1988" height="1470"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="30" height="17">
+  <data encoding="csv">
+''')
+		c = choice(vals)
+		grid = ""
+		for y in range(height):
+			for x in range(width):
+				grid += "%d," % c
+			grid += "\n"
+
+		grid = grid[:-2] + "\n"
+		# print(grid)
+		f.write(grid)
+
+		f.write("</data>\n </layer></map>\n")
+		f.close()
 def MapLoad(Map_Name):
 	for layer in Map_Name.visible_layers:
 		if isinstance(layer, TiledTileLayer):
@@ -165,6 +189,9 @@ while running:
 
 			if evt.key == K_s:
 				player.switch_weapon()
+			if evt.key == K_q:
+				randomize()	
+				MapLoad(load_pygame("Maps/64.tmx"))
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
@@ -183,7 +210,8 @@ while running:
 	hits = sprite.groupcollide(enemies, bullets, True, True)
 	if hits:
 		score += 1
-
+	if score == 1:
+		randomize()
 	all_sprites.draw(screen)
 	screen.blit(f.render(str(score), True, BLACK), (0, 0))
 	draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
