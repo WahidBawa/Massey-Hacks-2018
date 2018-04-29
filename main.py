@@ -29,7 +29,6 @@ def load_images():
 	images["player1"] = image.load("Sprites/PNG/Hitman 1/hitman1_machine.png")
 	images["bullet"] = image.load("Sprites/PNG/weapon_gun.png")
 	images["enemy"] = image.load("Sprites/PNG/Zombie 1/zoimbie1_hold.png")
-	# time.wait(1000)
 
 ani_pics = []
 for i in range(445):
@@ -65,6 +64,7 @@ class Player(sprite.Sprite):
 	def __init__(self):
 		sprite.Sprite.__init__(self)
 		all_sprites.add(self)
+		self.health = 100
 		self.real_image = images["player1"]
 		self.ang = 0
 		self.image = self.real_image
@@ -79,6 +79,8 @@ class Player(sprite.Sprite):
 		self.image = transform.rotate(self.real_image, 180-degrees(self.ang))
 		self.rect = self.image.get_rect()
 		self.rect.center = width/2, height/2
+		for i in sprite.spritecollide(self, enemies, False):
+			self.health -= 0.2
 
 	def shoot_bullet(self):
 		self.bullet_counter += 1
@@ -90,7 +92,8 @@ class Player(sprite.Sprite):
 				for i in range(5):
 					Bullet(self.rect.centerx, self.rect.centery, self.ang+radians(randint(-20,20)))
 	def switch_weapon(self):
-		self.weapon = len(weapons) - weapons.keys().index(self.weapons)
+		l = list(weapons)
+		self.weapon = l[len(weapons)-1 - l.index(self.weapon)]
 
 class Bullet(sprite.Sprite):
 	def __init__(self, x, y, ang):
@@ -122,17 +125,16 @@ class Enemy(sprite.Sprite):
 		self.x, self.y = self.get_rand_pos()
 		self.image = self.real_image
 		self.rect = self.image.get_rect()
-		self.x, self.y = randint(0,width), randint(0,height)
+		self.x, self.y = self.get_rand_pos()
 		self.rect.center = self.x, self.y
 		self.ang = self.get_ang()
 
 	def get_rand_pos(self):
-		global text
-		valid = False
 		x, y = 0, 0
 		while True:
 			x, y = randint(0,width), randint(0,height)
-			if hypot(player.rect.centerx-x, player.rect.centery-y) > 500:
+			dist = hypot(player.rect.centerx-x, player.rect.centery-y)
+			if dist > 500:
 				return x, y
 
 	def get_ang(self):
@@ -159,6 +161,9 @@ while running:
 		if evt.type == KEYDOWN:
 			if evt.key == K_ESCAPE:
 				running = False
+
+			if evt.key == K_s:
+				player.switch_weapon()
 	mx, my = mouse.get_pos()
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
@@ -179,7 +184,7 @@ while running:
 		score += 1
 
 	all_sprites.draw(screen)
-	screen.blit(f.render(str(score), True, BLACK), (0, 0))
+	screen.blit(f.render(str(player.health), True, BLACK), (0, 0))
 	display.flip()
 	myClock.tick(60)
 quit()
