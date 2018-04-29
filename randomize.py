@@ -1,4 +1,5 @@
 from random import *
+
 vals = [1,14,96]
 width, height = 30, 17
 with (open("Maps/64.tmx", 'w')) as f:

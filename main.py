@@ -1,5 +1,5 @@
 import threading, itertools
-from load_pygameme import *
+from pygame import *
 from math import *
 from random import *
 from pytmx import *
