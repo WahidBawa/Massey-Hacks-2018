@@ -16,9 +16,9 @@ mixer.pre_init(44100,-16,1,512)
 mixer.init()
 mixer.music.load("music/music.ogg")#loads the song
 mixer.music.play(-1)
-try:
-	ser = serial.Serial('COM8', 9600)
-except: pass
+# try:
+ser = serial.Serial('COM8', 9600)
+# except: pass
 width, height = size = (min(1920,display.Info().current_w), min(1080,display.Info().current_h))
 screen = display.set_mode(size, FULLSCREEN)
 running = True
@@ -194,7 +194,7 @@ while running:
 	mb = mouse.get_pressed()
 	kp = key.get_pressed()
 	if mode == 'menu':
-		playRect = Rect(width / 2 - 58, 500, 130, 80) #520, 480
+		playRect = Rect(width / 2 - 58, 500, 130, 80) # 520, 480
 		print(mx,my)
 		screen.blit(transform.scale(image.load("Sprites/menu/back.jpg").convert_alpha(), (width, height)), (0,0))
 		screen.blit(f1.render("Mafia Defenders", True, (255,0,0)), (width/2 - 475,0))
@@ -202,7 +202,7 @@ while running:
 		
 		display.flip()
 
-	else:	
+	else:
 		try:
 			s = str(ser.readline())[2:-5]
 			print(s)
