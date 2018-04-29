@@ -3,7 +3,7 @@ from load_pygameme import *
 from math import *
 from random import *
 from pytmx import *
-
+from randomize import *
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
@@ -185,9 +185,9 @@ while running:
 		score += 1
 
 	all_sprites.draw(screen)
+	screen.blit(f.render(str(score), True, BLACK), (0, 0))
 	draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
 	draw.rect(screen, GREEN, (100, 12, int(player.health*2), 36))
-	screen.blit(f.render(str(player.health), True, BLACK), (0, 0))
 	display.flip()
 	myClock.tick(60)
 quit()
