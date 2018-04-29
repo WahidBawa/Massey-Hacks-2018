@@ -17,9 +17,9 @@ mixer.pre_init(44100,-16,1,512)
 mixer.init()
 mixer.music.load("music/music.ogg")#loads the song
 mixer.music.play(-1)
-try:
-	ser = serial.Serial('COM8', 9600)
-except: pass
+# try:
+ser = serial.Serial('COM6', 9600)
+# except: pass
 width, height = size = (min(1920,display.Info().current_w), min(1080,display.Info().current_h))
 screen = display.set_mode(size, FULLSCREEN)
 running = True
@@ -48,7 +48,11 @@ def load_images():
 	images = {}
 	images["player1"] = image.load("Sprites/PNG/Hitman 1/hitman1_machine.png")
 	images["bullet"] = image.load("Sprites/PNG/weapon_gun.png")
-	images["enemy"] = image.load("Sprites/PNG/Zombie 1/zoimbie1_hold.png")
+	images["enemy1"] = image.load("Sprites/PNG/Man Blue/manBlue_hold.png")
+	images["enemy2"] = image.load("Sprites/PNG/Man Brown/manBrown_hold.png")
+	images["enemy3"] = image.load("Sprites/PNG/Man Old/manOld_hold.png")
+	images["enemy4"] = image.load("Sprites/PNG/Soldier 1/soldier1_hold.png")
+	images["enemy5"] = image.load("Sprites/PNG/Survivor 1/survivor1_hold.png")
 	images["back"] = transform.scale(image.load("Sprites/menu/back.jpg").convert_alpha(), (width, height))
 
 ani_pics = []
@@ -150,7 +154,7 @@ class Enemy(sprite.Sprite):
 		all_sprites.add(self)
 		enemies.add(self)
 		self.SPEED = randint(10,30)/10
-		self.real_image = images["enemy"]
+		self.real_image = images["enemy%d"%randint(1,5)]
 		self.x, self.y = self.get_rand_pos()
 		self.image = self.real_image
 		self.rect = self.image.get_rect()
@@ -222,7 +226,7 @@ while running:
 		try:
 			s = str(ser.readline())[2:-5]
 			print(s)
-			if 30 < int(s) < 100:
+			if 900 < int(s) < 1000:
 				player.inPosition = False
 			else:
 				if not player.inPosition:
@@ -246,6 +250,7 @@ while running:
 		if hits:
 			score += 1
 		if score % 40 == 0:
+			print(score % 40)
 			randomize()	
 			score += 0.1
 		if player.health <= 0:
