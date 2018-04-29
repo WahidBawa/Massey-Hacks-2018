@@ -14,11 +14,11 @@ BLUE = (0,0,255)
 init()
 mixer.pre_init(44100,-16,1,512)
 mixer.init()
-mixer.music.load("music.ogg")#loads the song
+mixer.music.load("music/music.ogg")#loads the song
 mixer.music.play(-1)
-try:
-	ser = serial.Serial('COM3', 9600)
-except: pass
+# try:
+ser = serial.Serial('COM8', 9600)
+# except: pass
 width, height = size = (min(1920,display.Info().current_w), min(1080,display.Info().current_h))
 screen = display.set_mode(size, FULLSCREEN)
 running = True
@@ -219,7 +219,7 @@ while running:
 	screen.blit(f.render(str(score), True, BLACK), (0, 0))
 	draw.rect(screen, BLACK, (98, 10, 204, 40), 4)
 	draw.rect(screen, GREEN, (100, 12, int(player.health*2), 36))
-	
+
 	display.flip()
 	myClock.tick(60)
 quit()
