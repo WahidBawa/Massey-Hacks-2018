@@ -199,6 +199,9 @@ while running:
 				save()
 			if evt.key == K_s:
 				player.switch_weapon()
+			if evt.key == K_q:
+				score += 39	
+				player.health += 100
 		if evt.type == MOUSEBUTTONUP:
 			if evt.button == 1 and mode == 'menu' and playRect.collidepoint(mx,my):
 				mode = 'play'
